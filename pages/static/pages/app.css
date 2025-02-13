@@ -1,0 +1,17 @@
+.bg-secondary { /*Cambia el fondo de los elementos con la clase bg-secondary a un color azul oscuro (#2c3e50)*/
+    background-color: #2c3e50 !important;   
+   }
+   .copyright { /*Cambia el fondo de los elementos con la clase copyright a un tono azul más oscuro (#1a252f)*/
+    background-color: #1a252f;
+   }
+   .bg-primary { /*Cambia el fondo de los elementos con la clase bg-primary a un color verde azulado (#1abc9c).*/
+    background-color: #1abc9c !important;   /*El !important asegura que este color sobreescriba cualquier otro estilo definido
+                                                anteriormente*/
+   }
+   nav{ /*Hace que el texto dentro de la barra de navegación (<nav>) sea más grueso (font-weight: 700 = bold)*/
+    font-weight: 700;
+   }
+   .img-card{
+    height: 18vw;   /*Ajusta la altura de las imágenes al 18% de la ventana (vw)*/
+    object-fit: cover;  /*Hace que la imagen cubra todo el contenedor sin deformarse*/
+   }
