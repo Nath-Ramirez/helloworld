@@ -128,3 +128,45 @@ class ProductListView(ListView):
         context['subtitle'] = 'List of products'
         return context
     
+class CartView(View):   #Vista principal del carrito 
+    template_name = 'cart/index.html' #Especifica la plantilla html que se utilizará para renderizar el carrito
+
+    def get(self, request): #Este método maneja cuando el usuario visita la página del carrtio (get)
+        # Simulated database for products
+        products = {}   #Simula una base de datos de productos. En una app real, esto se reemplazaría con una consulta a tu modelo de datos de productos 
+        products[121] = {'name': 'Tv samsung', 'price': '1000'} #Ejemplo de un producto en el "catálogo"
+        products[11] = {'name': 'Iphone', 'price': '2000'}  
+        # Get cart products from session
+        cart_products = {}  #Diccionario para almacenar los productos que están actualmente en el carrito del usuario
+        cart_product_data = request.session.get('cart_product_data', {})   
+        #Recupera los datos del carrito de la sesión del usuario. request.session es la forma en que Django maneja las sesiones.
+        #'cart_product_data' es la clave que se utiliza para almacenar los datos del carrito en la sesión. Si no existe nada en la sesión, 
+        #se inicializa con un diccionario vacío 
+        
+        for key, product in products.items():   #Itera sobre los productos disponibles
+            if str(key) in cart_product_data.keys(): #Comprueba si el id del producto está en el carrito almacenado en la sesión (se guarda como string)
+                cart_products[key] = product    #Si el producto está en el carrito, se agrega al diccionario 'cart_products'
+                
+        # Prepare data for the view
+        view_data = {   #Diccionario que s ele pasará a la plantilla
+        'title': 'Cart - Online Store',
+        'subtitle': 'Shopping Cart',
+        'products': products,   #Todos los productos
+        'cart_products': cart_products  #Los productos del carrito
+        }
+        return render(request, self.template_name, view_data)   #Renderiza la plantilla
+    def post(self, request, product_id):   #Este método maneja cuando el usuario agrega un producto al carrito (post)
+        # Get cart products from session and add the new product
+        cart_product_data = request.session.get('cart_product_data', {})   #Obtiene los datos del carrito de la sesión, o de un diccionario vacío
+        cart_product_data[product_id] = product_id  #Agrega el product_id al diccionario cart_product_data
+        #Aquí se está usando el product_id como clave y como valor. En una app real, podrías guardar más información del producto en el carrito
+        request.session['cart_product_data'] = cart_product_data    #Guarda los datos actualizados del carrito en la sesión
+        return redirect('cart_index')   #Redirige al usuario a la página del carrito 'cart_index'
+
+class CartRemoveAllView(View):  #Vista para vaciar el carrito
+    def post(self, request):    #Maneja las solicitudes post para vaciar el carrito
+    # Remove all products from cart in session
+        if 'cart_product_data' in request.session:  #Verifica si existen datos del carrito en la sesión 
+            del request.session['cart_product_data']    #Elimina los datos del carrito de la sesión
+        return redirect('cart_index')   ##Redirige al usuario a la página del carrito 
+    
